@@ -49,3 +49,25 @@ class Power(db.Model, SerializerMixin):
     
     def __repr__(self):
         return f'<Power {self.id}: {self.name}; {self.description}>'
+
+# Creating hero/power table    
+class HeroPower(db.Model, SerializerMixin):
+    __tablename__ = 'hero_powers'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    strength = db.Column(db.String)
+    hero_id = db.Column(db.Integer, db.ForeignKey('heroes.id'), nullable=False)
+    power_id = db.Column(db.Integer, db.ForeignKey('powers.id'), nullable=False)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    
+    serialize_rules = ('-hero.hero_power', '-power.hero_power',)
+    
+    @validates('strength')
+    def validate_strength(self, key, value):
+        if value not in ['Strong', 'Weak', 'Average']:
+            raise ValueError('Invalid strength')
+        return value
+    
+    def __repr__(self):
+        return f'<Hero-Power {self.id}: {self.strength} {self.hero_id} {self.power_id}>'   
