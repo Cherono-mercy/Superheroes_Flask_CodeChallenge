@@ -24,5 +24,28 @@ class Hero(db.Model, SerializerMixin):
     
     def __repr__(self):
         return f'<Hero {self.id}: {self.super_name}>'
+    
+# Creating powers table    
 
-# add any models you may need. 
+class Power(db.Model, SerializerMixin):
+    __tablename__ = 'powers'
+    
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String)
+    description = db.Column(db.String)
+    created_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    updated_at = db.Column(db.DateTime, default=datetime.utcnow, nullable=False)
+    
+    # Define the relationship to HeroPower
+    hero_power = db.relationship('HeroPower', backref='power', lazy=True)
+    
+    serialize_rules = ('-hero_power.power',)
+    
+    @validates('description')
+    def validate_description(self, key, body):
+        if len(body) < 20:
+            raise ValueError('description must be at least 20 characters')
+        return body
+    
+    def __repr__(self):
+        return f'<Power {self.id}: {self.name}; {self.description}>'
