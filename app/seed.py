@@ -10,8 +10,8 @@ import random
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 # Import your models here
-from server.app import db, app
-from server.models import Hero, Power, HeroPower
+from app import db, app
+from models import Hero, Power, HeroPower
 
 # Create an application context
 with app.app_context():
