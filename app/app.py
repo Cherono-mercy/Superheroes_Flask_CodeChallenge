@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-from flask import Flask, request, make_response, jsonify
+#!/usr/bin/env python3
 
+from flask import Flask, request, make_response, jsonify
 from flask_restful import Resource, Api
 from flask_migrate import Migrate
 
@@ -9,7 +10,7 @@ from models import db, Hero, Power, HeroPower
 
 app = Flask(__name__)
 api = Api(app)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///heroes.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///app.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 
 migrate = Migrate(app, db)
@@ -18,7 +19,7 @@ db.init_app(app)
 
 @app.route('/')
 def home():
-    return 'Welcome to my superheroes API'
+    return 'Welcome to the superheroes API'
 
 class Heroes(Resource):
     def get(self):
@@ -30,10 +31,7 @@ class Heroes(Resource):
                 "super_name": hero.super_name
             }
             heroes.append(hero_dict)
-        return make_response(jsonify(heroes), 200)  
-
-api.add_resource(Heroes, '/heroes') 
-
+        return make_response(jsonify(heroes), 200)
 
 class HeroesId(Resource):
     
@@ -60,8 +58,6 @@ class HeroesId(Resource):
         else:
             return make_response(jsonify({"error": "Hero not found"}), 404)
         
-api.add_resource(HeroesId, '/heroes/<int:id>')
-
 class Powers(Resource):
     
     def get(self):
@@ -76,8 +72,6 @@ class Powers(Resource):
             powers.append(power_dict)
         return make_response(jsonify(powers), 200)
     
-api.add_resource(Powers, '/powers') 
-
 class PowersId(Resource):
     
     def get(self, id):
@@ -112,8 +106,6 @@ class PowersId(Resource):
             return make_response(jsonify(power_dict), 200)
         except ValueError as e:
             return make_response({"error": e.args}, 200)
-        
-api.add_resource(PowersId, '/powers/<int:id>') 
 
 class HeroPower(Resource):
     
@@ -132,6 +124,10 @@ class HeroPower(Resource):
         else:
             return make_response(jsonify({"errors": ["validation errors"]}), 404)
 
+api.add_resource(Heroes, '/heroes')
+api.add_resource(HeroesId, '/heroes/<int:id>')
+api.add_resource(Powers, '/powers')
+api.add_resource(PowersId, '/powers/<int:id>')
 
 if __name__ == '__main__':
-    app.run(port=4000)
+    app.run(port=5555)
