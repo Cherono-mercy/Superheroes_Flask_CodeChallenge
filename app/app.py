@@ -113,7 +113,24 @@ class PowersId(Resource):
         except ValueError as e:
             return make_response({"error": e.args}, 200)
         
-api.add_resource(PowersId, '/powers/<int:id>')        
+api.add_resource(PowersId, '/powers/<int:id>') 
+
+class HeroPower(Resource):
+    
+    def post(self):
+        data = request.get_json()
+        new_hero_power = HeroPower(
+            strength = data.get('strength'),
+            power_id = data.get('power_id'),
+            hero_id = data.get('hero_id')
+        )
+        db.session.add(new_hero_power)
+        db.session.commit()
+        
+        if new_hero_power:
+            return make_response(jsonify(new_hero_power.to_dict), 200)
+        else:
+            return make_response(jsonify({"errors": ["validation errors"]}), 404)
 
 
 if __name__ == '__main__':
